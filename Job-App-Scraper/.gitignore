@@ -1,4 +1,8 @@
+# Ignore environment configuration 
 __pycache__
-config.json
 .vscode
+
+# Ignore config file containing sensitive information
+config.json
+
 

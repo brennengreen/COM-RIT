@@ -1,23 +1,24 @@
 #!/usr/local/bin/python3
 
-"""
-    USAGE: Scrapes the hard coded Job Application pages for applicant results
-    and uploads them to the comm.uky.edu filesystem
-"""
+###############################################################################
+#   USAGE: Scrapes the hard coded Job Application pages for applicant results #
+#   and uploads them to the comm.uky.edu filesystem                           #
+###############################################################################
+
 import requests
 import time
 import simplejson as json
 from bs4 import BeautifulSoup
 from lxml import html
 
-#############################################################################
-#    MAIN REQUEST URLS                                                      #
-#    @MAIN_URL - The main login page for the UKJobs website.                #
-#        This page is static and contains one form which is the login form  #
-#                                                                           #
-#    @LOGIN_URL - The session handler for UKJobs HR Login.                  #
-#        This is where the session should be posted to properly login.      #
-#############################################################################
+###############################################################################
+#    MAIN REQUEST URLS                                                        #
+#    @MAIN_URL - The main login page for the UKJobs website.                  #
+#        This page is static and contains one form which is the login form    #
+#                                                                             #
+#    @LOGIN_URL - The session handler for UKJobs HR Login.                    #
+#        This is where the session should be posted to properly login.        #
+###############################################################################
 MAIN_URL = "https://ukjobs.uky.edu/hr/login"
 LOGIN_URL = "https://ukjobs.uky.edu/hr/sessions"
 
