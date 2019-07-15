@@ -10,6 +10,7 @@ import time
 import simplejson as json
 from bs4 import BeautifulSoup
 from lxml import html
+from html_node import Result
 
 ###############################################################################
 #    MAIN REQUEST URLS                                                        #
@@ -21,6 +22,7 @@ from lxml import html
 ###############################################################################
 MAIN_URL = "https://ukjobs.uky.edu/hr/login"
 LOGIN_URL = "https://ukjobs.uky.edu/hr/sessions"
+UK_JOBS = "https://ukjobs.uky.edu"
 
 
 def parse_json(json_file):
@@ -98,8 +100,15 @@ def parse_result(html_result):
     # returns list of lists (each table representing a result)
     soup = BeautifulSoup(html_result, features="lxml")
     results_table = soup.find_all('table', id="results")[0]
-    print(results_table.find_all('tr'))
-    return [0]
+    even_results = [result for result in results_table.find_all('tr',
+                                                                class_="even")]
+    odd_results = [result for result in results_table.find_all('tr',
+                                                               class_="odd")]
+
+    all_results = [Result(result) for result in
+                   (even_results+odd_results)]
+
+    return all_results
 
 
 def main():
@@ -113,19 +122,24 @@ def main():
     result = scrape_html(lecturer_one["url"], lecturer_one["username"],
                          lecturer_one["password"])
     applications = parse_result(result.text)
+    print([[applicants.name, applicants.vita, applicants.letter,
+            applicants.special_request] for applicants in applications])
 
     # Lecturer Position Two
     print("Scraping Lecturer Two")
     result = scrape_html(lecturer_two["url"], lecturer_two["username"],
                          lecturer_two["password"])
     applications = parse_result(result.text)
-
+    print([[applicants.name, applicants.vita, applicants.letter,
+            applicants.special_request] for applicants in applications])
+    
     # Lecturer Position Three
     print("Scraping Lecturer Three")
     result = scrape_html(lecturer_three["url"], lecturer_three["username"],
                          lecturer_three["password"])
     applications = parse_result(result.text)
-
+    print([[applicants.name, applicants.vita, applicants.letter,
+            applicants.special_request] for applicants in applications])
 
 if __name__ == '__main__':
     start_time = time.time()
