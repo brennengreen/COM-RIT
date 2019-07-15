@@ -14,10 +14,10 @@ from html_node import Result
 
 ###############################################################################
 #    MAIN REQUEST URLS                                                        #
-#    @MAIN_URL - The main login page for the UKJobs website.                  #
+#    MAIN_URL - The main login page for the UKJobs website.                  #
 #        This page is static and contains one form which is the login form    #
 #                                                                             #
-#    @LOGIN_URL - The session handler for UKJobs HR Login.                    #
+#    LOGIN_URL - The session handler for UKJobs HR Login.                    #
 #        This is where the session should be posted to properly login.        #
 ###############################################################################
 MAIN_URL = "https://ukjobs.uky.edu/hr/login"
