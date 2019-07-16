@@ -8,6 +8,8 @@
 import requests
 import time
 import simplejson as json
+import wget
+import os
 from bs4 import BeautifulSoup
 from lxml import html
 from html_node import Result
@@ -23,6 +25,7 @@ from html_node import Result
 MAIN_URL = "https://ukjobs.uky.edu/hr/login"
 LOGIN_URL = "https://ukjobs.uky.edu/hr/sessions"
 UK_JOBS = "https://ukjobs.uky.edu"
+session_requests = requests.session()
 
 
 def parse_json(json_file):
@@ -32,7 +35,7 @@ def parse_json(json_file):
 
         Parameters:
             : json_file (str) : The path to the config file
-        
+
         Returns:
             : data : An object which contains the parsed json data
     """
@@ -57,7 +60,6 @@ def scrape_html(content_url, username, password):
             : result (Reponse Object) : A response object that
                                         can be used to get the HTML Node
     """
-    session_requests = requests.session()
     result = session_requests.get(MAIN_URL)
     tree = html.fromstring(result.text)
     authenticity_token = list(
@@ -76,13 +78,6 @@ def scrape_html(content_url, username, password):
         result = session_requests.get(content_url,
                                       headers=dict(referer=content_url))
         return result
-
-
-def store_file(created_file, directory):
-    """
-        DocString to be done
-    """
-    print("Done storing " + created_file + " in " + directory)
 
 
 def parse_result(html_result):
@@ -111,6 +106,20 @@ def parse_result(html_result):
     return all_results
 
 
+def download_path(path, file_name):
+    """
+        Usage:
+            Return a response object that is the media file contained in a url.
+        Parameters:
+            : path (str) : A path which is the url to a media file that will
+            be downloaded.
+        Returns:
+            : file (response) : The response object which is the file we're
+            trying to download.
+    """
+    wget.download(path, file_name)
+
+
 def main():
     config_data = parse_json("config.json")
     lecturer_one = config_data["fe02030"]
@@ -122,24 +131,27 @@ def main():
     result = scrape_html(lecturer_one["url"], lecturer_one["username"],
                          lecturer_one["password"])
     applications = parse_result(result.text)
-    print([[applicants.name, applicants.vita, applicants.letter,
-            applicants.special_request] for applicants in applications])
+    # print([[applicants.name, applicants.vita, applicants.letter,
+    #       applicants.special_request] for applicants in applications])
+    vita_path = UK_JOBS + applications[0].vita
+    print(vita_path)
+    download_path(vita_path, "./vita")
 
     # Lecturer Position Two
     print("Scraping Lecturer Two")
     result = scrape_html(lecturer_two["url"], lecturer_two["username"],
                          lecturer_two["password"])
     applications = parse_result(result.text)
-    print([[applicants.name, applicants.vita, applicants.letter,
-            applicants.special_request] for applicants in applications])
-    
+    # print([[applicants.name, applicants.vita, applicants.letter,
+    #        applicants.special_request] for applicants in applications])
+
     # Lecturer Position Three
     print("Scraping Lecturer Three")
     result = scrape_html(lecturer_three["url"], lecturer_three["username"],
                          lecturer_three["password"])
     applications = parse_result(result.text)
-    print([[applicants.name, applicants.vita, applicants.letter,
-            applicants.special_request] for applicants in applications])
+    # print([[applicants.name, applicants.vita, applicants.letter,
+    #        applicants.special_request] for applicants in applications])
 
 if __name__ == '__main__':
     start_time = time.time()
