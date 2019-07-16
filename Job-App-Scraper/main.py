@@ -106,7 +106,7 @@ def parse_result(html_result):
     return all_results
 
 
-def download_path(path, file_name):
+def download_path(path, dir_path, file_name):
     """
         Usage:
             Return a response object that is the media file contained in a url.
@@ -117,7 +117,41 @@ def download_path(path, file_name):
             : file (response) : The response object which is the file we're
             trying to download.
     """
-    wget.download(path, file_name)
+    response = session_requests.get(path)
+    f = open(os.path.join(dir_path, file_name), 'wb')
+    f.write(response.content)
+    f.close()
+
+
+def sort_applicants(category_path, applicant_list):
+    """
+        Usage:
+            Sort all applicants in a specified list to a specified category
+            directory.
+        Parameters:
+            : category_path (str) : A string that represents the path to a
+            specified category directory
+            : applicant_list (html_node/Result) : A list of applicants that
+            need to be categorized
+    """
+    for applicant in applicant_list:
+        applicant_folder = applicant.name.replace(", ", " ").title()
+        applicant_folder = applicant_folder.replace(" ", "_")
+        full_path = os.path.join(category_path + applicant_folder)
+
+        try:
+            os.mkdir(full_path)
+        except FileExistsError:
+            print(full_path + " already exists, skipping directory creation...")
+            continue
+
+        vita_path = UK_JOBS + applicant.vita
+        letter_path = UK_JOBS + applicant.letter
+        evidence_path = UK_JOBS + applicant.special_request
+
+        download_path(vita_path, full_path, "vita.pdf")
+        download_path(letter_path, full_path, "letter.pdf")
+        download_path(evidence_path, full_path, "evidence.pdf")
 
 
 def main():
@@ -131,30 +165,26 @@ def main():
     result = scrape_html(lecturer_one["url"], lecturer_one["username"],
                          lecturer_one["password"])
     applications = parse_result(result.text)
-    # print([[applicants.name, applicants.vita, applicants.letter,
-    #       applicants.special_request] for applicants in applications])
-    vita_path = UK_JOBS + applications[0].vita
-    print(vita_path)
-    download_path(vita_path, "./vita")
+    sort_applicants("./LectGen/", applications)
 
     # Lecturer Position Two
     print("Scraping Lecturer Two")
     result = scrape_html(lecturer_two["url"], lecturer_two["username"],
                          lecturer_two["password"])
     applications = parse_result(result.text)
-    # print([[applicants.name, applicants.vita, applicants.letter,
-    #        applicants.special_request] for applicants in applications])
+    sort_applicants("./LectOrg/", applications)
 
     # Lecturer Position Three
     print("Scraping Lecturer Three")
     result = scrape_html(lecturer_three["url"], lecturer_three["username"],
                          lecturer_three["password"])
     applications = parse_result(result.text)
-    # print([[applicants.name, applicants.vita, applicants.letter,
-    #        applicants.special_request] for applicants in applications])
+    sort_applicants("./LectOrg/", applications)
+
 
 if __name__ == '__main__':
     start_time = time.time()
     main()
     run_time = (time.time() - start_time)
     print("Completed in " + str(run_time))
+    print("USER: DO NOT FORGET TO CHECK FOR SUFFIXES!")
