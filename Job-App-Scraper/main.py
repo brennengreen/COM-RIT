@@ -25,6 +25,8 @@ from html_node import Result
 MAIN_URL = "https://ukjobs.uky.edu/hr/login"
 LOGIN_URL = "https://ukjobs.uky.edu/hr/sessions"
 UK_JOBS = "https://ukjobs.uky.edu"
+LECT_ORG = "/Volumes/COM Web Pages/data/jobsearch/app/webroot/files/Lecturer Org/"
+LECT_GEN = "/Volumes/COM Web Pages/data/jobsearch/app/webroot/files/Lecturer Gen/"
 session_requests = requests.session()
 
 
@@ -165,21 +167,21 @@ def main():
     result = scrape_html(lecturer_one["url"], lecturer_one["username"],
                          lecturer_one["password"])
     applications = parse_result(result.text)
-    sort_applicants("./LectGen/", applications)
+    sort_applicants(LECT_GEN, applications)
 
     # Lecturer Position Two
     print("Scraping Lecturer Two")
     result = scrape_html(lecturer_two["url"], lecturer_two["username"],
                          lecturer_two["password"])
     applications = parse_result(result.text)
-    sort_applicants("./LectOrg/", applications)
+    sort_applicants(LECT_ORG, applications)
 
     # Lecturer Position Three
     print("Scraping Lecturer Three")
     result = scrape_html(lecturer_three["url"], lecturer_three["username"],
                          lecturer_three["password"])
     applications = parse_result(result.text)
-    sort_applicants("./LectOrg/", applications)
+    sort_applicants(LECT_ORG, applications)
 
 
 if __name__ == '__main__':
