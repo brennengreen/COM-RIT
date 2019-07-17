@@ -6,6 +6,7 @@
 ###############################################################################
 
 import requests
+import datetime
 import time
 import simplejson as json
 import wget
@@ -144,8 +145,11 @@ def sort_applicants(category_path, applicant_list):
         try:
             os.mkdir(full_path)
         except FileExistsError:
-            print(full_path + " already exists, skipping directory creation...")
+            # There is no reason to "handle" this error further
+            # if the file already exists it was already added to the 
+            # file system and just needs to be ignored
             continue
+        
         print("Now sorting applicant: " + applicant.name)
         
         vita_path = UK_JOBS + applicant.vita
@@ -158,6 +162,7 @@ def sort_applicants(category_path, applicant_list):
 
 
 def main():
+    print("---- DAILY SCRAPE ----\n---- {date} ----".format(date=datetime.datetime.now()))
     config_data = parse_json("config.json")
     lecturer_one = config_data["fe02030"]
     lecturer_two = config_data["fe02031"]
@@ -171,14 +176,14 @@ def main():
     sort_applicants(LECT_GEN, applications)
 
     # Lecturer Position Two
-    print("Scraping Lecturer Two")
+    print("\n\nScraping Lecturer Two")
     result = scrape_html(lecturer_two["url"], lecturer_two["username"],
                          lecturer_two["password"])
     applications = parse_result(result.text)
     sort_applicants(LECT_ORG, applications)
 
     # Lecturer Position Three
-    print("Scraping Lecturer Three")
+    print("\n\nScraping Lecturer Three")
     result = scrape_html(lecturer_three["url"], lecturer_three["username"],
                          lecturer_three["password"])
     applications = parse_result(result.text)
@@ -190,4 +195,3 @@ if __name__ == '__main__':
     main()
     run_time = (time.time() - start_time)
     print("Completed in " + str(run_time))
-    print("USER: DO NOT FORGET TO CHECK FOR SUFFIXES!")

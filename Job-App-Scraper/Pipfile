@@ -11,6 +11,7 @@ simplejson = "*"
 lxml = "*"
 beautifulsoup4 = "*"
 wget = "*"
+datetime = "*"
 
 [requires]
 python_version = "3.7"
