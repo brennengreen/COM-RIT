@@ -1,0 +1,6 @@
+#!/bin/bash
+
+clear
+cd ~/Desktop/COM-RIT/Job-App-Scraper
+echo Running Job Application Scraper
+pipenv run python3 main.py
