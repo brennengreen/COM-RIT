@@ -146,7 +146,8 @@ def sort_applicants(category_path, applicant_list):
         except FileExistsError:
             print(full_path + " already exists, skipping directory creation...")
             continue
-
+        print("Now sorting applicant: " + applicant.name)
+        
         vita_path = UK_JOBS + applicant.vita
         letter_path = UK_JOBS + applicant.letter
         evidence_path = UK_JOBS + applicant.special_request
